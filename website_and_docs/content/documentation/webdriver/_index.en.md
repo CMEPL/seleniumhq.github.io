@@ -1,3 +1,43 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time
+
+# Set up the WebDriver
+driver_path = 'path_to_your_webdriver'  # e.g., 'chromedriver.exe' or '/usr/local/bin/chromedriver'
+driver = webdriver.Chrome(executable_path=driver_path)
+
+# Open WhatsApp Web
+driver.get('https://web.whatsapp.com')
+
+# Wait for the user to scan the QR code (you can add more sophisticated wait here)
+input("Press Enter after scanning QR code")
+
+# Function to count messages for a specific contact
+def count_messages(contact_name):
+    # Find and click on the contact
+    search_box = driver.find_element(By.XPATH, '//div[@contenteditable="true"][@data-tab="3"]')
+    search_box.send_keys(contact_name)
+    search_box.send_keys(Keys.RETURN)
+    
+    time.sleep(2)  # wait for chat to load
+
+    # Count messages in the chat
+    messages = driver.find_elements(By.XPATH, '//div[contains(@class,"message-in")]')
+    sent_messages = driver.find_elements(By.XPATH, '//div[contains(@class,"message-out")]')
+    total_messages = len(messages) + len(sent_messages)
+    
+    return total_messages
+
+# Example usage
+contact_name = 'Contact Name'  # Replace with the contact's name
+message_count = count_messages(contact_name)
+print(f"Total messages with {contact_name}: {message_count}")
+
+# Close the driver
+driver.quit()
+
+
 ---
 title: "WebDriver"
 linkTitle: "WebDriver"
